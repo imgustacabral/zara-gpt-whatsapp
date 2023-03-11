@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DB_URL")
+}
+
+
+
+model Customer {
+  id String @default(uuid()) @id
+  user String @unique
+  messages Message[]
+  @@map("customers")
+}
+
+model Message {
+  id String @default(uuid()) @id
+  role Role @default(user)
+  content String?
+  owner Customer? @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String 
+
+}
+
+enum Role {
+  user
+  assistant
+  system
+}
