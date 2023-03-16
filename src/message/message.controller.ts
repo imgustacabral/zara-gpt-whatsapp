@@ -1,62 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { CustomerService } from './customer/customer.service';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { MessageDto } from './dto/message-dto';
 import { MessageService } from './message.service';
-import { TwilioService } from './twilio/twilio.service';
 
 @Controller('message')
 export class MessageController {
-  constructor(
-    private readonly messageService: MessageService,
-    private readonly customerService: CustomerService,
-    private readonly twilio: TwilioService,
-  ) {}
+  constructor(private readonly messageService: MessageService) {}
 
   @Post()
+  @HttpCode(200)
   async message(@Body() messageDto: MessageDto) {
-    const route = messageDto.Body.toLowerCase().split(' ')[0];
-    const user = messageDto.From;
-    const serverNumber = messageDto.To;
-    const content = messageDto.Body;
+    const command = messageDto.Body.toLowerCase().split(' ')[0];
 
-    if (route === '/imagine') {
-      return this.messageService.sendImageMessage(messageDto);
+    if (command === '/imagine') {
+      return await this.messageService.sendImageMessage(messageDto);
     }
-    if (route === '/help') {
+    if (command === '/clear') {
+      return await this.messageService.clearMessageHistory(messageDto);
     }
-    if (route === '/clear') {
-      await this.customerService.clearHistory(user);
-      return await this.twilio.createMessage(
-        serverNumber,
-        user,
-        'Historico Limpo com sucesso, como posso te ajudar hoje?',
-      );
+    if (command === '/help' || command[0] === '/') {
+      return await this.messageService.sendHelpMessage(messageDto);
     }
-
-    const customer = await this.customerService.findCustomer(user);
-    if (!customer) {
-      await this.customerService.createCustomer({ user });
-      await this.customerService.createMessage({
-        role: 'user',
-        content,
-        owner: {
-          connect: {
-            user,
-          },
-        },
-      });
-      return this.messageService.sendMessage(messageDto);
-    }
-
-    await this.customerService.createMessage({
-      role: 'user',
-      content,
-      owner: {
-        connect: {
-          user,
-        },
-      },
-    });
-    return this.messageService.sendMessage(messageDto);
+    return await this.messageService.sendMessage(messageDto);
   }
 }

@@ -1,73 +1,83 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 🤖 API ChatGPT para WhatsApp
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Esta é uma API de um projeto pessoal que utiliza a Twilio e o modelo GPT-3.5 Turbo para responder mensagens do WhatsApp de forma automatizada, além de utilizar o Dall-E para gerar imagens a partir de prompts.
 
-## Description
+### 📑 Sumário
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Funcionalidades](#🚀features)
+- [Ambiente Sandbox (Testes)](#🧪ambiente-sandbox-testes)
+- [Instalação e Configuração](#🛠️instala%C3%A7%C3%A3o-e-configura%C3%A7%C3%A3o)
 
-## Installation
+### 🚀Features
 
-```bash
-$ npm install
+-   Conversação utilizando todo o poder do ChatGPT apenas mandando mensagens pelo WhatsApp. 🤝💬
+-   Geração de imagens utilizando o comando `/imagine seu prompt`. 🖼️🤖
+-   Limpeza do histórico de mensagens do banco de dados utilizando o comando `/clear`. 🗑️
+-   Obtenha ajuda sobre os comandos disponíveis utilizando o comando `/help`. ❓🤔
+
+Veja a imagem abaixo como exemplo:
+[![Exemplo de imagem](https://i.postimg.cc/RVqv61bP/image.png)](https://postimg.cc/Tp8zBbxm)
+
+
+
+###  🧪Ambiente Sandbox (Testes) 
+
+Para realizar testes com a API ChatGPT em um ambiente seguro, a Twilio oferece um ambiente sandbox que pode ser utilizado gratuitamente. Para começar a utilizar o ambiente, siga os seguintes passos:
+
+1.  Envie uma mensagem de texto com o texto "join box-fire" para o número de telefone +1 (415) 523-8886.
+    
+2.  Aguarde a mensagem de confirmação informando que você entrou no ambiente sandbox.
+    
+3.  Envie uma nova mensagem para o número do sandbox. A mensagem será encaminhada para a API ChatGPT responder de forma automática.
+Ao utilizar o ambiente sandbox para testes, é importante lembrar que todas as mensagens enviadas e recebidas são armazenadas em um banco de dados. Essas mensagens serão mantidas no banco de dados até que o comando `/clear` seja executado para limpar o histórico.
+
+Além disso, ao utilizar a API ChatGPT e Dall-E, é importante lembrar que os termos de uso da [OpenAI]([https://beta.openai.com/terms/](https://beta.openai.com/terms/)) também se aplicam. Certifique-se de ler e concordar com esses termos antes de utilizar a API.
+
+Também é necessário concordar com os termos de uso da Twilio, que pode ser encontrados [aqui](https://www.twilio.com/legal/tos).
+
+
+### 🛠️Instalação e Configuração
+
+Para instalar e configurar a API, siga os passos abaixo:
+
+1.  Crie uma conta na Twilio e OpenAI e pegue suas credenciais. Preencha no arquivo `.env`. O arquivo `.env.example` está na raiz do projeto. Veja o exemplo abaixo:
+
+```
+OPENAI_API_KEY=<sua-chave-da-OpenAI>
+TWILIO_ACCOUNT_SID=<seu-SID-da-Twilio>
+TWILIO_AUTH_TOKEN=<seu-token-de-autenticação-da-Twilio>
+DATABASE_URL=<url-do-seu-banco-de-dados>` 
 ```
 
-## Running the app
+O campo `DATABASE_URL` deve ser preenchido com a URL do seu banco de dados. Por padrão, está configurado para utilizar o PostgreSQL.
+
+2.  Instale as dependências do projeto com o seguinte comando:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Test
+3.  Rode a API em localhost com o comando:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Support
+4. Para realizar testes em localhost, é altamente recomendado que você utilize o NGROK para fazer o tunnel de localhost para a internet. Siga os passos abaixo:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+-   [Instale o ngrok](https://ngrok.com/download).
+    
+-  Rode o comando abaixo no seu terminal para criar um túnel para a porta 3000 da sua máquina:
 
-## Stay in touch
+```bash
+ngrok http 3000
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+3.  O comando acima irá gerar uma URL externa no terminal. Copie esta URL e coloque como endpoint no console da sua Twilio. Certifique-se de que toda requisição vá para o formato POST para o endpoint `/message`. Veja o exemplo abaixo:
 
-## License
+```
+https://sua-url-do-ngrok.com/message
+````
 
-Nest is [MIT licensed](LICENSE).
+Assim, a Twilio enviará um webhook com as mensagens e imagens recebidas para esta URL e a API ChatGPT será capaz de responder às mensagens de forma automatizada.

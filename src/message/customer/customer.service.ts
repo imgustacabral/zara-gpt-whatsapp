@@ -37,14 +37,11 @@ export class CustomerService {
 
   async clearHistory(user: string) {
     try {
-      const customer = await this.findCustomer(user);
-      console.log(customer);
-      const deleteUser = await this.prisma.customer.delete({
+      return await this.prisma.customer.delete({
         where: {
           user,
         },
       });
-      return deleteUser;
     } catch (e) {
       console.log(e);
     }
