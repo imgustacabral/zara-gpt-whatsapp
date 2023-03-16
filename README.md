@@ -1,8 +1,19 @@
 
-## 🤖 API ChatGPT para WhatsApp
+# <center> 🤖 API ChatGPT para WhatsApp </center>
 
 Esta é uma API de um projeto pessoal que utiliza a Twilio e o modelo GPT-3.5 Turbo para responder mensagens do WhatsApp de forma automatizada, além de utilizar o Dall-E para gerar imagens a partir de prompts.
+## 🛠️ Stack Utilizada
+A API ChatGPT para WhatsApp foi desenvolvida utilizando as seguintes tecnologias:
 
+-   [![NestJS](https://img.shields.io/badge/-NestJS-FE0902?logo=nestjs&logoColor=white)](https://nestjs.com/) - Framework que fornece uma arquitetura escalável para desenvolvimento de apps em servidores.
+-   [![Prisma](https://img.shields.io/badge/-Prisma-1B222D?logo=prisma&logoColor=white)](https://www.prisma.io/) - ORM que facilita a interação com bancos de dados.
+-   [![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/) - Banco de dados relacional de código aberto.
+-   [![Twilio API](https://img.shields.io/badge/-Twilio-FFC20E?logo=twilio&logoColor=white)](https://www.twilio.com/) - API de comunicação por Whatsapp, SMS, voz e vídeo.
+-   [![OpenAI API](https://img.shields.io/badge/-OpenAI-FF733E?logo=openai&logoColor=white)](https://beta.openai.com/) - API para processamento de linguagem natural e inteligência artificial.
+-   [![TypeScript](https://img.shields.io/badge/-TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) - Superset de JavaScript que adiciona tipagem estática à linguagem.
+-   [![Fastify](https://img.shields.io/badge/-Fastify-202020?logo=fastify&logoColor=white)](https://www.fastify.io/) - Utilizado como adapter junto ao NestJS com foco em desempenho e escalabilidade.
+
+Essa stack proporcionou uma implementação eficiente e escalável para a API ChatGPT para WhatsApp.
 ### 📑 Sumário
 
 - [Funcionalidades](#🚀features)
