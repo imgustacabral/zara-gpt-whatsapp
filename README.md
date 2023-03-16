@@ -36,7 +36,7 @@ Veja a imagem abaixo como exemplo:
 
 Para realizar testes com a API ChatGPT em um ambiente seguro, a Twilio oferece um ambiente sandbox que pode ser utilizado gratuitamente. Para começar a utilizar o ambiente, siga os seguintes passos:
 
-1.  Envie uma mensagem de texto com o texto "join box-fire" para o número de telefone +1 (415) 523-8886 ou [clique aqui](https://wa.me/14155238886?text=join%20box-fire).
+1.  Envie uma mensagem de texto com o texto "join box-fire" para o whatsapp +1 (415) 523-8886 ou [clique aqui](https://wa.me/14155238886?text=join%20box-fire).
     
 2.  Aguarde a mensagem de confirmação informando que você entrou no ambiente sandbox.
     
