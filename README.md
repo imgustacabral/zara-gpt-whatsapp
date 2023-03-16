@@ -58,7 +58,8 @@ Para instalar e configurar a API, siga os passos abaixo:
 OPENAI_API_KEY=<sua-chave-da-OpenAI>
 TWILIO_ACCOUNT_SID=<seu-SID-da-Twilio>
 TWILIO_AUTH_TOKEN=<seu-token-de-autenticação-da-Twilio>
-DATABASE_URL=<url-do-seu-banco-de-dados>` 
+DATABASE_URL=<url-do-seu-banco-de-dados>`
+BOT_PERSONA=<prompt-da-sua-persona>
 ```
 
 O campo `DATABASE_URL` deve ser preenchido com a URL do seu banco de dados. Por padrão, está configurado para utilizar o PostgreSQL.
