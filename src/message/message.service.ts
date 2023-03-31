@@ -15,9 +15,10 @@ export class MessageService {
     const user = messageDto.From;
     const content = messageDto.Body;
     const customer = await this.customerService.findCustomer(user);
+
     if (!customer) {
       await this.customerService.createCustomer({ user });
-      await this.customerService.createMessage({
+      await this.customerService.saveMessage({
         role: 'system',
         content: process.env.BOT_PERSONA,
         owner: {
@@ -26,7 +27,7 @@ export class MessageService {
           },
         },
       });
-      await this.customerService.createMessage({
+      await this.customerService.saveMessage({
         role: 'user',
         content,
         owner: {
@@ -37,7 +38,7 @@ export class MessageService {
       });
     }
 
-    await this.customerService.createMessage({
+    await this.customerService.saveMessage({
       role: 'user',
       content,
       owner: {
@@ -58,7 +59,11 @@ export class MessageService {
       context,
       content,
     );
-    if (!response) {
+    if (response === 400) {
+      this.customerService.clearHistory(clientId);
+      return this.sendMessage(messageDto);
+    }
+    if (!response || response === 429) {
       const content = {
         from: serverId,
         to: clientId,
@@ -66,7 +71,8 @@ export class MessageService {
       };
       return await this.twilioService.createMessage(content);
     }
-    await this.customerService.createMessage({
+
+    await this.customerService.saveMessage({
       role: 'assistant',
       content: response,
       owner: {
@@ -142,8 +148,8 @@ export class MessageService {
 
   async clearMessageHistory(messageDto: MessageDto) {
     const content = {
-      to: messageDto.To,
-      from: messageDto.From,
+      to: messageDto.From,
+      from: messageDto.To,
       body: 'Histórico limpo com sucesso, como posso te ajudar hoje?',
     };
 

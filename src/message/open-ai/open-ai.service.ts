@@ -27,8 +27,12 @@ export class OpenAiService {
       const GPTResponse = response.data.choices[0].message.content;
       return GPTResponse;
     } catch (e) {
-      console.warn(e);
-      return 'Oops, Alguma coisa deu errada, use o comando /clear e tente novamente';
+      if (e.response.status === 400 || e.response.status === 429) {
+        return e.response.status;
+      } else {
+        console.log(e);
+        return;
+      }
     }
   }
 
