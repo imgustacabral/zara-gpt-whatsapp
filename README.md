@@ -55,11 +55,13 @@ Para instalar e configurar a API, siga os passos abaixo:
 1.  Crie uma conta na Twilio e OpenAI e pegue suas credenciais. Preencha no arquivo `.env`. O arquivo `.env.example` está na raiz do projeto. Veja o exemplo abaixo:
 
 ```
-OPENAI_API_KEY=<sua-chave-da-OpenAI>
-TWILIO_ACCOUNT_SID=<seu-SID-da-Twilio>
-TWILIO_AUTH_TOKEN=<seu-token-de-autenticação-da-Twilio>
-DATABASE_URL=<url-do-seu-banco-de-dados>`
-BOT_PERSONA=<prompt-da-sua-persona>
+OPENAI_API_KEY=
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_WHATSAPP_NUMBER=whatsapp:
+DATABASE_URL=
+BOT_PERSONA=
+
 ```
 
 O campo `DATABASE_URL` deve ser preenchido com a URL do seu banco de dados. Por padrão, está configurado para utilizar o PostgreSQL.
@@ -70,9 +72,11 @@ O campo `DATABASE_URL` deve ser preenchido com a URL do seu banco de dados. Por 
 npm install
 ```
 
-3.  Rode a API em localhost com o comando:
+3.  Rode o testes, se der tudo OK, inicie a API em localhost com o comando:
 
 ```bash
+npm run test
+
 npm run start:dev
 ```
 
@@ -90,6 +94,6 @@ ngrok http 3000
 
 ```
 https://sua-url-do-ngrok.com/message
-````
+```
 
 Assim, a Twilio enviará um webhook com as mensagens e imagens recebidas para esta URL e a API ChatGPT será capaz de responder às mensagens de forma automatizada.
