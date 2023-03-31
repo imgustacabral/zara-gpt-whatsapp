@@ -13,6 +13,7 @@ export class TwilioService {
   }
 
   async createMessage(createMessageDto: CreateMessageDto) {
+    let status = '';
     const { to, from, body, mediaUrl } = createMessageDto;
     if (!from || !to) {
       throw new HttpException(
@@ -28,7 +29,9 @@ export class TwilioService {
         to: to,
       })
       .then((msg) => {
-        return msg.status;
+        status = msg.status;
       });
+
+    return status;
   }
 }

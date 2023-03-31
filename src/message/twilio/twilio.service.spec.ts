@@ -27,7 +27,7 @@ describe('TwilioService', () => {
   it('should send message without mediaURL', async () => {
     const content = {
       from: process.env.TWILIO_WHATSAPP_NUMBER,
-      to: 'whatsapp:+5586981189181',
+      to: 'whatsapp:+558681189181',
       body: 'Hello Test',
     };
     const result = await service.createMessage(content);
