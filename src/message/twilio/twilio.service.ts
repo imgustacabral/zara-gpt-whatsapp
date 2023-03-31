@@ -15,7 +15,10 @@ export class TwilioService {
   async createMessage(createMessageDto: CreateMessageDto) {
     const { to, from, body, mediaUrl } = createMessageDto;
     if (!from || !to) {
-      throw new Error('You must provide from and to whatsapp numbers');
+      throw new HttpException(
+        'You must provide from and to whatsapp numbers',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     return await this.client.messages
       .create({
