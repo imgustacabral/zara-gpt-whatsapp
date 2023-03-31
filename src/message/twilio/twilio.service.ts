@@ -20,12 +20,12 @@ export class TwilioService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return await this.client.messages
+    await this.client.messages
       .create({
-        from,
+        from: from,
         body,
         mediaUrl: [mediaUrl],
-        to,
+        to: to,
       })
       .then((msg) => {
         return msg.status;

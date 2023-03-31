@@ -60,8 +60,8 @@ export class MessageService {
     );
     if (!response) {
       const content = {
-        to: serverId,
-        from: clientId,
+        from: serverId,
+        to: clientId,
         body: 'Serviço indisponível no momento. Por favor, tente novamente mais tarde.',
       };
       return await this.twilioService.createMessage(content);
@@ -89,8 +89,8 @@ export class MessageService {
         });
       } else {
         await this.twilioService.createMessage({
-          to: serverId,
-          from: clientId,
+          from: serverId,
+          to: clientId,
           body: response,
         });
       }
