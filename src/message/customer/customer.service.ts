@@ -29,7 +29,7 @@ export class CustomerService {
     });
   }
 
-  async createMessage(data: Prisma.MessageCreateInput) {
+  async saveMessage(data: Prisma.MessageCreateInput) {
     return await this.prisma.message.create({
       data,
     });
