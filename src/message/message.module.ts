@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { MessageController } from './message.controller';
 import { OpenAiService } from './open-ai/open-ai.service';
 import { TwilioService } from './twilio/twilio.service';
-import { MessageService } from './message.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CustomerService } from './customer/customer.service';
+import { MessageService } from './message.service';
 
 @Module({
   imports: [],
@@ -13,8 +13,8 @@ import { CustomerService } from './customer/customer.service';
     PrismaService,
     OpenAiService,
     TwilioService,
-    MessageService,
     CustomerService,
+    MessageService,
   ],
 })
 export class MessageModule {}

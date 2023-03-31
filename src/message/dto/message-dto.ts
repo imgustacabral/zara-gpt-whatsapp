@@ -1,22 +1,22 @@
 import { IsString } from 'class-validator';
 export class MessageDto {
   @IsString()
-  readonly SmsMessageSid: string;
+  readonly SmsMessageSid?: string;
 
   @IsString()
-  readonly NumMedia: string;
+  readonly NumMedia?: string;
 
   @IsString()
-  readonly ProfileName: string;
+  readonly ProfileName?: string;
 
   @IsString()
-  readonly SmsSid: string;
+  readonly SmsSid?: string;
 
   @IsString()
-  readonly WaId: string;
+  readonly WaId?: string;
 
   @IsString()
-  readonly SmsStatus: string;
+  readonly SmsStatus?: string;
 
   @IsString()
   readonly Body: string;
@@ -25,20 +25,20 @@ export class MessageDto {
   readonly To: string;
 
   @IsString()
-  readonly NumSegments: string;
+  readonly NumSegments?: string;
 
   @IsString()
-  readonly ReferralNumMedia: string;
+  readonly ReferralNumMedia?: string;
 
   @IsString()
-  readonly MessageSid: string;
+  readonly MessageSid?: string;
 
   @IsString()
-  readonly AccountSid: string;
+  readonly AccountSid?: string;
 
   @IsString()
   readonly From: string;
 
   @IsString()
-  readonly ApiVersion: string;
+  readonly ApiVersion?: string;
 }

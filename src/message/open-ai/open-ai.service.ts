@@ -28,7 +28,7 @@ export class OpenAiService {
       return GPTResponse;
     } catch (e) {
       console.warn(e);
-      return 'Oops, Alguma coisa deu errada, tente novamente mais tarde!';
+      return 'Oops, Alguma coisa deu errada, use o comando /clear e tente novamente';
     }
   }
 

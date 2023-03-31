@@ -59,11 +59,12 @@ export class MessageService {
       content,
     );
     if (!response) {
-      return await this.twilioService.createMessage(
-        serverId,
-        clientId,
-        'Serviço indisponível no momento. Por favor, tente novamente mais tarde.',
-      );
+      const content = {
+        to: serverId,
+        from: clientId,
+        body: 'Serviço indisponível no momento. Por favor, tente novamente mais tarde.',
+      };
+      return await this.twilioService.createMessage(content);
     }
     await this.customerService.createMessage({
       role: 'assistant',
@@ -79,11 +80,19 @@ export class MessageService {
         const chunks = response.match(/.{1,1400}/g);
         console.log(chunks.length);
         chunks.forEach(async (chunk) => {
-          await this.twilioService.createMessage(serverId, clientId, chunk);
+          await this.twilioService.createMessage({
+            to: serverId,
+            from: clientId,
+            body: chunk,
+          });
           await sleep(3000);
         });
       } else {
-        await this.twilioService.createMessage(serverId, clientId, response);
+        await this.twilioService.createMessage({
+          to: serverId,
+          from: clientId,
+          body: response,
+        });
       }
     } catch (e) {
       console.log(e);
@@ -94,27 +103,28 @@ export class MessageService {
     const clientId = messageDto.From;
     const serverId = messageDto.To;
     const prompt = messageDto.Body.substring(9);
-    const imgURL = await this.openAiService.createImage(prompt);
-    if (imgURL === 400) {
-      return await this.twilioService.createMessage(
-        serverId,
-        clientId,
-        'Peço desculpas, mas não sou capaz de gerar essa imagem no momento.',
-      );
+    const createdImage = await this.openAiService.createImage(prompt);
+
+    const content = {
+      from: serverId,
+      to: clientId,
+      body: 'Peço desculpas, mas não sou capaz de gerar essa imagem no momento.',
+      imgUrl: '',
+    };
+
+    if (createdImage === 400) {
+      return await this.twilioService.createMessage(content);
     }
-    return await this.twilioService.createMessage(
-      serverId,
-      clientId,
-      prompt,
-      imgURL,
-    );
+    content.body = prompt;
+    content.imgUrl = createdImage;
+    return await this.twilioService.createMessage(content);
   }
 
   async sendHelpMessage(messageDto: MessageDto) {
-    return await this.twilioService.createMessage(
-      messageDto.To,
-      messageDto.From,
-      `  🤖 Bem-vindo ao ChatGPT! Eu sou o seu assistente virtual. Aqui estão as funcionalidades disponíveis:
+    const content = {
+      from: messageDto.To,
+      to: messageDto.From,
+      body: `  🤖 Bem-vindo ao ChatGPT! Eu sou o seu assistente virtual. Aqui estão as funcionalidades disponíveis:
 
     💬 Conversação: Você pode conversar comigo usando todo o poder do ChatGPT. Basta me enviar uma mensagem!
     
@@ -125,15 +135,19 @@ export class MessageService {
     👀 Ah, e não se preocupe! Todas as informações compartilhadas são mantidas em sigilo e seguimos as políticas de privacidade da OpenAI e Twilio.
     
     👋 Se precisar de ajuda em algum momento, é só chamar! Estou aqui para ajudá-lo.`,
-    );
+    };
+
+    return await this.twilioService.createMessage(content);
   }
 
   async clearMessageHistory(messageDto: MessageDto) {
+    const content = {
+      to: messageDto.To,
+      from: messageDto.From,
+      body: 'Histórico limpo com sucesso, como posso te ajudar hoje?',
+    };
+
     await this.customerService.clearHistory(messageDto.From);
-    return await this.twilioService.createMessage(
-      messageDto.To,
-      messageDto.From,
-      'Histórico limpo com sucesso, como posso te ajudar hoje?',
-    );
+    return await this.twilioService.createMessage(content);
   }
 }
