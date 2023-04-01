@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CustomerService } from './customer/customer.service';
 import { MessageDto } from './dto/message-dto';
 import { OpenAiService } from './open-ai/open-ai.service';
-import { Buttons, Client, LocalAuth } from 'whatsapp-web.js';
+import { Client, LocalAuth } from 'whatsapp-web.js';
 import { CreateMessageDto } from './whatsapp/dto/create-message.dto';
 import * as qrcode from 'qrcode';
 
@@ -81,27 +81,33 @@ export class MessageService {
     const user = messageDto.From;
     const content = messageDto.Body;
     const customer = await this.customerService.findCustomer(user);
+    console.log(customer);
 
     if (!customer) {
-      await this.customerService.createCustomer({ user });
-      await this.customerService.saveMessage({
-        role: 'system',
-        content: process.env.BOT_PERSONA,
-        owner: {
-          connect: {
-            user,
-          },
-        },
+      const createdCustomer = await this.customerService.createCustomer({
+        user,
       });
-      await this.customerService.saveMessage({
-        role: 'user',
-        content,
-        owner: {
-          connect: {
-            user,
+      if (createdCustomer) {
+        await this.customerService.saveMessage({
+          role: 'system',
+          content: process.env.BOT_PERSONA,
+          owner: {
+            connect: {
+              user,
+            },
           },
-        },
-      });
+        });
+        await this.customerService.saveMessage({
+          role: 'user',
+          content,
+          owner: {
+            connect: {
+              user,
+            },
+          },
+        });
+      }
+
       return await this.sendResponse({
         to: user,
         body: `  🙌 Olá! Você ama a ideia de IA WhatsApp que pode ajudar no dia a dia? 🤖
@@ -111,7 +117,7 @@ export class MessageService {
   👉 Cada doação é importante e ajuda a manter e aprimorar o projeto. Use a chave PIX abaixo para fazer uma doação agora mesmo e faça parte da nossa missão de tornar IA's acessíveis para todos.
 
   🚀 Sua contribuição fará uma grande diferença para nós e para a comunidade. Obrigado pela sua generosidade! 😊
-  
+
   🙏 Basta enviar a mensagem doar ou /doar🙏 `,
       });
     }

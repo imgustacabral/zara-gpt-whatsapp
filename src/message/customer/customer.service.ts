@@ -22,14 +22,9 @@ export class CustomerService {
   }
 
   async createCustomer(data: Prisma.CustomerCreateInput) {
-    const customer = await this.findCustomer(data.id);
-    if (!customer) {
-      return await this.prisma.customer.create({
-        data,
-      });
-    } else {
-      return;
-    }
+    return await this.prisma.customer.create({
+      data,
+    });
   }
 
   async saveMessage(data: Prisma.MessageCreateInput) {
