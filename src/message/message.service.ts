@@ -40,6 +40,8 @@ export class MessageService {
     });
 
     this.client.on('message', async (msg) => {
+      console.log(msg.body);
+      console.log(msg.from);
       const command = msg.body.toLowerCase().split(' ')[0];
 
       if (command === '/imagine') {
@@ -54,7 +56,8 @@ export class MessageService {
       if (
         command === 'contribuir' ||
         command === '/doar' ||
-        command === '/donate'
+        command === '/donate' ||
+        command === 'doar'
       ) {
         return await this.donationMessage({ Body: msg.body, From: msg.from });
       }
@@ -69,15 +72,6 @@ export class MessageService {
   }
 
   async sendResponse(createMessageDto: CreateMessageDto) {
-    if (
-      createMessageDto.body.includes('PIX') &&
-      createMessageDto.body.includes('doação')
-    ) {
-      const donate_button = new Buttons(createMessageDto.body, [
-        { body: 'Contribuir 🥰' },
-      ]);
-      return await this.client.sendMessage(createMessageDto.to, donate_button);
-    }
     return await this.client.sendMessage(
       createMessageDto.to,
       createMessageDto.body,
@@ -108,17 +102,18 @@ export class MessageService {
           },
         },
       });
-      await this.sendResponse({
+      return await this.sendResponse({
         to: user,
         body: `  🙌 Olá! Você ama a ideia de IA WhatsApp que pode ajudar no dia a dia? 🤖
 
-      🎉 Nós estamos construindo isso agora! Mas para continuar precisamos de sua ajuda. 🙏
+  🎉 Nós estamos construindo isso agora! Mas para continuar precisamos de sua ajuda.
     
-      👉 Cada doação é importante e ajuda a manter e aprimorar o projeto. Use a chave PIX abaixo para fazer uma doação agora mesmo e faça parte da nossa missão de tornar IA's acessíveis para todos.
+  👉 Cada doação é importante e ajuda a manter e aprimorar o projeto. Use a chave PIX abaixo para fazer uma doação agora mesmo e faça parte da nossa missão de tornar IA's acessíveis para todos.
 
-      🚀 Sua contribuição fará uma grande diferença para nós e para a comunidade. Obrigado pela sua generosidade! 😊`,
+  🚀 Sua contribuição fará uma grande diferença para nós e para a comunidade. Obrigado pela sua generosidade! 😊
+  
+  🙏 Basta enviar a mensagem doar ou /doar🙏 `,
       });
-      await this.sendHelpMessage(messageDto);
     }
 
     await this.customerService.saveMessage({
