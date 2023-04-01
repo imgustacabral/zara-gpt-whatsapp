@@ -5,16 +5,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 @Injectable()
 export class CustomerService {
   constructor(private readonly prisma: PrismaService) {}
-
-  async createCustomer(data: Prisma.CustomerCreateInput) {
-    const customer = await this.prisma.customer.create({
-      data,
-    });
-    return customer;
-  }
-
   async findCustomer(id: string) {
-    return await this.prisma.customer.findUnique({
+    return await this.prisma.customer.findFirst({
       where: {
         user: id,
       },
@@ -29,6 +21,17 @@ export class CustomerService {
     });
   }
 
+  async createCustomer(data: Prisma.CustomerCreateInput) {
+    const customer = await this.findCustomer(data.id);
+    if (!customer) {
+      return await this.prisma.customer.create({
+        data,
+      });
+    } else {
+      return;
+    }
+  }
+
   async saveMessage(data: Prisma.MessageCreateInput) {
     return await this.prisma.message.create({
       data,
@@ -36,6 +39,8 @@ export class CustomerService {
   }
 
   async clearHistory(user: string) {
+    const customer = await this.findCustomer(user);
+    if (!customer) return;
     try {
       return await this.prisma.customer.delete({
         where: {

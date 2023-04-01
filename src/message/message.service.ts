@@ -2,16 +2,87 @@ import { Injectable } from '@nestjs/common';
 import { CustomerService } from './customer/customer.service';
 import { MessageDto } from './dto/message-dto';
 import { OpenAiService } from './open-ai/open-ai.service';
-import { WhatsappService } from './whatsapp/whatsapp.service';
-
+import { Buttons, Client, LocalAuth } from 'whatsapp-web.js';
+import { CreateMessageDto } from './whatsapp/dto/create-message.dto';
+import * as qrcode from 'qrcode';
 
 @Injectable()
 export class MessageService {
+  client: Client;
   constructor(
-    private readonly whatsappService: WhatsappService,
     private readonly openAiService: OpenAiService,
     private readonly customerService: CustomerService,
-  ) {}
+  ) {
+    this.client = new Client({
+      authStrategy: new LocalAuth({ clientId: 'bot-zdg' }),
+      puppeteer: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      },
+    });
+  }
+
+  initialize(): void {
+    this.client.on('qr', (qr) => {
+      console.log('QR Generated');
+      qrcode.toString(
+        qr,
+        { type: 'terminal', small: true, scale: 0.5 },
+        function (err, url) {
+          if (err) throw err;
+          console.log(url);
+        },
+      );
+    });
+
+    this.client.on('ready', () => {
+      console.log('Server is running!');
+    });
+
+    this.client.on('message', async (msg) => {
+      const command = msg.body.toLowerCase().split(' ')[0];
+
+      if (command === '/imagine') {
+        return await this.sendHelpMessage({ Body: msg.body, From: msg.from });
+      }
+      if (command === '/clear') {
+        return await this.clearMessageHistory({
+          Body: msg.body,
+          From: msg.from,
+        });
+      }
+      if (
+        command === 'contribuir' ||
+        command === '/doar' ||
+        command === '/donate'
+      ) {
+        return await this.donationMessage({ Body: msg.body, From: msg.from });
+      }
+      if (command === '/help' || command === 'ajuda' || command[0] === '/') {
+        return await this.sendHelpMessage({ Body: msg.body, From: msg.from });
+      }
+
+      return await this.sendMessage({ Body: msg.body, From: msg.from });
+    });
+
+    this.client.initialize();
+  }
+
+  async sendResponse(createMessageDto: CreateMessageDto) {
+    if (
+      createMessageDto.body.includes('PIX') &&
+      createMessageDto.body.includes('doação')
+    ) {
+      const donate_button = new Buttons(createMessageDto.body, [
+        { body: 'Contribuir 🥰' },
+      ]);
+      return await this.client.sendMessage(createMessageDto.to, donate_button);
+    }
+    return await this.client.sendMessage(
+      createMessageDto.to,
+      createMessageDto.body,
+    );
+  }
   async sendMessage(messageDto: MessageDto) {
     const user = messageDto.From;
     const content = messageDto.Body;
@@ -37,6 +108,17 @@ export class MessageService {
           },
         },
       });
+      await this.sendResponse({
+        to: user,
+        body: `  🙌 Olá! Você ama a ideia de IA WhatsApp que pode ajudar no dia a dia? 🤖
+
+      🎉 Nós estamos construindo isso agora! Mas para continuar precisamos de sua ajuda. 🙏
+    
+      👉 Cada doação é importante e ajuda a manter e aprimorar o projeto. Use a chave PIX abaixo para fazer uma doação agora mesmo e faça parte da nossa missão de tornar IA's acessíveis para todos.
+
+      🚀 Sua contribuição fará uma grande diferença para nós e para a comunidade. Obrigado pela sua generosidade! 😊`,
+      });
+      await this.sendHelpMessage(messageDto);
     }
 
     await this.customerService.saveMessage({
@@ -48,9 +130,7 @@ export class MessageService {
         },
       },
     });
-    function sleep(ms: number) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
+
     const clientId = messageDto.From;
 
     const context = await this.customerService.getMessagesContext(clientId);
@@ -68,7 +148,7 @@ export class MessageService {
         to: clientId,
         body: 'Serviço indisponível no momento. Por favor, tente novamente mais tarde.',
       };
-      return await this.whatsappService.createMessage(content);
+      return await this.sendResponse(content);
     }
 
     await this.customerService.saveMessage({
@@ -83,15 +163,14 @@ export class MessageService {
     try {
       if (response.length > 1400) {
         const chunks = response.match(/.{1,1400}/g);
-        console.log(chunks.length);
-        chunks.forEach(async (chunk) => {
-         return await this.whatsappService.createMessage({
+        chunks.forEach(async (chunk: string) => {
+          return await this.sendResponse({
             to: clientId,
             body: chunk,
           });
         });
       } else {
-       return await this.whatsappService.createMessage({
+        return await this.sendResponse({
           to: clientId,
           body: response,
         });
@@ -113,30 +192,31 @@ export class MessageService {
     };
 
     if (createdImage === 400) {
-      return await this.whatsappService.createMessage(content);
+      return await this.sendResponse(content);
     }
     content.body = prompt;
     content.imgUrl = createdImage;
-    return await this.whatsappService.createMessage(content);
+    return await this.sendResponse(content);
   }
 
   async sendHelpMessage(messageDto: MessageDto) {
     const content = {
       to: messageDto.From,
-      body: `  🤖 Bem-vindo ao ChatGPT! Eu sou o seu assistente virtual. Aqui estão as funcionalidades disponíveis:
+      body: `
+  🤖 Bem-vindo! Eu sou o seu assistente virtual. Aqui estão as funcionalidades disponíveis:
 
-    💬 Conversação: Você pode conversar comigo usando todo o poder do ChatGPT. Basta me enviar uma mensagem!
+  💬 Conversação: Você pode conversar comigo e me perguntar qualquer coisa. Basta me enviar uma mensagem!
     
-    🎨 Geração de imagens: Você também pode gerar imagens incríveis usando o comando /imagine e fornecendo um prompt.
+  🎨 Geração de imagens [OFF]: Você também pode gerar imagens incríveis usando o comando /imagine e fornecendo um prompt.
 
-    🗑 Limpeza de histórico: Se quiser limpar o histórico de mensagens armazenado em nosso banco de dados, é só usar o comando /clear.
+  🗑 Limpeza de histórico: Se quiser limpar o histórico de mensagens, é só usar o comando /clear
+
+  👀 Quer ficar de olho em novas funcionalidades? é só enviar um /features
     
-    👀 Ah, e não se preocupe! Todas as informações compartilhadas são mantidas em sigilo e seguimos as políticas de privacidade da OpenAI e Twilio.
-    
-    👋 Se precisar de ajuda em algum momento, é só chamar! Estou aqui para ajudá-lo.`,
+  👋 Se precisar de ajuda em algum momento, é só chamar! Estou aqui para ajudá-lo.`,
     };
 
-    return await this.whatsappService.createMessage(content);
+    return await this.sendResponse(content);
   }
 
   async clearMessageHistory(messageDto: MessageDto) {
@@ -146,6 +226,21 @@ export class MessageService {
     };
 
     await this.customerService.clearHistory(messageDto.From);
-    return await this.whatsappService.createMessage(content);
+    return await this.sendResponse(content);
+  }
+
+  async donationMessage(messageDto: MessageDto) {
+    const content = {
+      to: messageDto.From,
+      body: `
+  🥳🥳 Muitooo obrigado 🥳🥳
+    
+  PIX CNPJ: 44.938.545-0001/19
+
+  Sua contribuição é essencial
+  para mantermos o projeto!
+      `,
+    };
+    return await this.sendResponse(content);
   }
 }

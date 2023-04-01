@@ -2,6 +2,7 @@
 .env
 /dist
 /node_modules
+/.wwebjs_auth
 
 # Logs
 logs
