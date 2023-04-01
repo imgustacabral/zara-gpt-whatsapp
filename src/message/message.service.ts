@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CustomerService } from './customer/customer.service';
 import { MessageDto } from './dto/message-dto';
 import { OpenAiService } from './open-ai/open-ai.service';
-import { TwilioService } from './twilio/twilio.service';
+import { WhatsappService } from './whatsapp/whatsapp.service';
+
 
 @Injectable()
 export class MessageService {
   constructor(
+    private readonly whatsappService: WhatsappService,
     private readonly openAiService: OpenAiService,
-    private readonly twilioService: TwilioService,
     private readonly customerService: CustomerService,
   ) {}
   async sendMessage(messageDto: MessageDto) {
@@ -51,7 +52,6 @@ export class MessageService {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
     const clientId = messageDto.From;
-    const serverId = messageDto.To;
 
     const context = await this.customerService.getMessagesContext(clientId);
     const response = await this.openAiService.createChatCompletition(
@@ -65,11 +65,10 @@ export class MessageService {
     }
     if (!response || response === 429) {
       const content = {
-        from: serverId,
         to: clientId,
         body: 'Serviço indisponível no momento. Por favor, tente novamente mais tarde.',
       };
-      return await this.twilioService.createMessage(content);
+      return await this.whatsappService.createMessage(content);
     }
 
     await this.customerService.saveMessage({
@@ -86,16 +85,13 @@ export class MessageService {
         const chunks = response.match(/.{1,1400}/g);
         console.log(chunks.length);
         chunks.forEach(async (chunk) => {
-          await this.twilioService.createMessage({
-            to: serverId,
-            from: clientId,
+         return await this.whatsappService.createMessage({
+            to: clientId,
             body: chunk,
           });
-          await sleep(3000);
         });
       } else {
-        await this.twilioService.createMessage({
-          from: serverId,
+       return await this.whatsappService.createMessage({
           to: clientId,
           body: response,
         });
@@ -107,28 +103,25 @@ export class MessageService {
 
   async sendImageMessage(messageDto: MessageDto) {
     const clientId = messageDto.From;
-    const serverId = messageDto.To;
     const prompt = messageDto.Body.substring(9);
     const createdImage = await this.openAiService.createImage(prompt);
 
     const content = {
-      from: serverId,
       to: clientId,
       body: 'Peço desculpas, mas não sou capaz de gerar essa imagem no momento.',
       imgUrl: '',
     };
 
     if (createdImage === 400) {
-      return await this.twilioService.createMessage(content);
+      return await this.whatsappService.createMessage(content);
     }
     content.body = prompt;
     content.imgUrl = createdImage;
-    return await this.twilioService.createMessage(content);
+    return await this.whatsappService.createMessage(content);
   }
 
   async sendHelpMessage(messageDto: MessageDto) {
     const content = {
-      from: messageDto.To,
       to: messageDto.From,
       body: `  🤖 Bem-vindo ao ChatGPT! Eu sou o seu assistente virtual. Aqui estão as funcionalidades disponíveis:
 
@@ -143,17 +136,16 @@ export class MessageService {
     👋 Se precisar de ajuda em algum momento, é só chamar! Estou aqui para ajudá-lo.`,
     };
 
-    return await this.twilioService.createMessage(content);
+    return await this.whatsappService.createMessage(content);
   }
 
   async clearMessageHistory(messageDto: MessageDto) {
     const content = {
       to: messageDto.From,
-      from: messageDto.To,
       body: 'Histórico limpo com sucesso, como posso te ajudar hoje?',
     };
 
     await this.customerService.clearHistory(messageDto.From);
-    return await this.twilioService.createMessage(content);
+    return await this.whatsappService.createMessage(content);
   }
 }

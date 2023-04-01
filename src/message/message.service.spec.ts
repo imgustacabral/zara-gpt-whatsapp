@@ -3,7 +3,6 @@ import { MessageService } from './message.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CustomerService } from './customer/customer.service';
 import { OpenAiService } from './open-ai/open-ai.service';
-import { TwilioService } from './twilio/twilio.service';
 import dotenv from 'dotenv';
 
 describe('MessageService', () => {
@@ -15,7 +14,6 @@ describe('MessageService', () => {
       providers: [
         PrismaService,
         OpenAiService,
-        TwilioService,
         CustomerService,
         MessageService,
       ],
