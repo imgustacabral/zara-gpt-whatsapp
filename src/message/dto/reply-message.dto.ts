@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class CreateMessageDto {
+export class ReplyMessageDto {
   @IsString()
   readonly body: string;
 

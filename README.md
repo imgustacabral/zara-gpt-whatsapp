@@ -15,7 +15,7 @@ A Zara foi desenvolvida utilizando as seguintes tecnologias:
 ### 🚀Funcionalidades
 
 -   Conversação utilizando o poder do ChatGPT apenas mandando mensagens pelo WhatsApp. 🤝💬
--   OFFLINE - Geração de imagens utilizando o comando `/imagine seu prompt`. 🖼️🤖
+-   Geração de imagens utilizando o comando `/imagine seu prompt`. 🖼️🤖
 -   Limpeza do histórico de mensagens do banco de dados utilizando o comando `/clear`. 🗑️
 -   Obtenha ajuda sobre os comandos disponíveis utilizando o comando `/help`. ❓🤔
 
