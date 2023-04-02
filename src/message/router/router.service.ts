@@ -72,17 +72,17 @@ export class RouterService {
         });
       }
 
-      if (command === '/help' || command === 'ajuda' || command[0] === '/') {
+      if (command === '/help' || command === 'ajuda') {
         return await this.reply({
           to,
           body: await this.messageService.helpMessage(),
         });
       }
-
       if (
         (msg.from.split('@')[1] === 'g.us' && command !== 'zara') ||
         command !== '/zara'
       ) {
+        console.log('Request from group');
         return;
       }
 
