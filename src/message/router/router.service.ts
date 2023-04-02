@@ -38,6 +38,7 @@ export class RouterService {
     this.client.on('message', async (msg) => {
       const command = msg.body.toLowerCase().split(' ')[0];
       const to = msg.from;
+
       if (command === '/imagine') {
         const createdImage = await this.messageService.createImage(msg.body);
         if (createdImage === 400) {
@@ -76,6 +77,13 @@ export class RouterService {
           to,
           body: await this.messageService.helpMessage(),
         });
+      }
+
+      if (
+        (msg.from.split('@')[1] === 'g.us' && command !== 'zara') ||
+        command !== '/zara'
+      ) {
+        return;
       }
 
       const response = await this.messageService.createMessage({
