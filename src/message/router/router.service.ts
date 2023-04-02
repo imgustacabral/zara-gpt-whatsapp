@@ -38,7 +38,9 @@ export class RouterService {
     this.client.on('message', async (msg) => {
       const command = msg.body.toLowerCase().split(' ')[0];
       const to = msg.from;
-
+      const isGroupMessage = msg.from.split('@')[1] === 'g.us';
+      console.log(isGroupMessage);
+      console.log(command);
       if (command === '/imagine') {
         const createdImage = await this.messageService.createImage(msg.body);
         if (createdImage === 400) {
@@ -78,11 +80,7 @@ export class RouterService {
           body: await this.messageService.helpMessage(),
         });
       }
-      if (
-        (msg.from.split('@')[1] === 'g.us' && command !== 'zara') ||
-        command !== '/zara'
-      ) {
-        console.log('Request from group');
+      if (isGroupMessage && command !== 'zara') {
         return;
       }
 
