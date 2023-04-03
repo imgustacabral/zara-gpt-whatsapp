@@ -5,7 +5,6 @@ import { Client, LocalAuth, MessageMedia } from 'whatsapp-web.js';
 import * as qrcode from 'qrcode';
 import { ReplyMessageDto } from '../dto/reply-message.dto';
 import { getCannotGenerateImageError } from '../helpers/error-messages';
-import { CommandDto } from '../dto/command.dto';
 
 @Injectable()
 export class RouterService {
@@ -103,39 +102,37 @@ export class RouterService {
     return await this.client.sendMessage(replyMessageDto.to, media);
   }
 
-  async handleImagineCommand(commandDto: CommandDto) {
-    const createdImage = await this.messageService.createImage(
-      commandDto.msg.body,
-    );
+  async handleImagineCommand(msg, to) {
+    const createdImage = await this.messageService.createImage(msg.body);
     if (createdImage === 400) {
       return await this.reply({
-        to: commandDto.msg.to,
+        to,
         body: getCannotGenerateImageError(),
       });
     }
     return await this.replyImage({
-      to: commandDto.msg.to,
+      to,
       body: createdImage,
     });
   }
 
-  async handleClearCommand(commandDto: CommandDto) {
+  async handleClearCommand(msg, to) {
     return await this.reply({
-      body: await this.messageService.clearMessageHistory(commandDto.msg.from),
-      to: commandDto.msg.from,
+      body: await this.messageService.clearMessageHistory(msg.from),
+      to: msg.from,
     });
   }
 
-  async handleDonateCommand(commandDto: CommandDto) {
+  async handleDonateCommand(msg, to) {
     return await this.reply({
-      to: commandDto.msg.to,
+      to,
       body: await this.messageService.donationMessage(),
     });
   }
 
-  async handleHelpCommand(commandDto: CommandDto) {
+  async handleHelpCommand(msg, to) {
     return await this.reply({
-      to: commandDto.msg.to,
+      to,
       body: await this.messageService.helpMessage(),
     });
   }
