@@ -17,7 +17,7 @@ export class RouterService {
       puppeteer: {
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      },
+  },
     });
 
     this.commands = new Map<string, Function>();
@@ -29,6 +29,7 @@ export class RouterService {
     this.commands.set('doar', this.handleDonateCommand.bind(this));
     this.commands.set('/help', this.handleHelpCommand.bind(this));
     this.commands.set('ajuda', this.handleHelpCommand.bind(this));
+    this.commands.set('/suporte', this.handleSuportHelper.bind(this));
   }
 
   initialize(): void {
@@ -56,6 +57,7 @@ export class RouterService {
       const handler = this.commands.get(command);
       if (handler) {
         return await handler(msg, to);
+        
       }
 
       if (isGroupMessage && command !== 'zara') {
@@ -136,4 +138,14 @@ export class RouterService {
       body: await this.messageService.helpMessage(),
     });
   }
+
+  async handleSuportHelper(msg,to){
+    return await this.reply({
+      to,
+      body: await this.messageService.helperSuport(),
+    });
+  }
+
 }
+
+

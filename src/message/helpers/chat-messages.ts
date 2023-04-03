@@ -5,6 +5,8 @@ function getHelpMessage(): string {
     💬 Conversação: Você pode conversar comigo e me perguntar qualquer coisa. Basta me enviar uma mensagem!
         
     🎨 Geração de imagens: Você também pode gerar imagens incríveis usando o comando /imagine e fornecendo um prompt.
+
+    👨‍🔧 Precisa de suporte tecnico com o bot? Utilize o /suporte
     
     🗑 Limpeza de histórico: Se quiser limpar o histórico de mensagens, é só usar o comando /clear
     
@@ -30,7 +32,7 @@ function getThankYouMessage(): string {
   return `
     🥳🥳 Muitooo obrigado 🥳🥳
       
-    PIX CNPJ: 44.938.545-0001/19
+    PIX Numero: (51)9 9780-5917
   
     Sua contribuição é essencial
     para mantermos o projeto!
@@ -41,9 +43,19 @@ function getClearChatSuccessMessage(): string {
   return `Histórico limpo com sucesso, como posso te ajudar hoje? `;
 }
 
+function getHelperSuporter(): string {
+  return `Para suporte humanizado, entre em contato através dos seguintes números durante o horário comercial:
+
+  📞 +55 64 9 8123-0208 - Falar com Gustavo
+  📞 +55 51 9 9780-5917 - Falar com Leonardo
+  
+  Por favor, observe que o suporte está disponível somente durante o horário comercial.`;
+}
+
 export {
   getDonationMessage,
   getHelpMessage,
   getThankYouMessage,
   getClearChatSuccessMessage,
+  getHelperSuporter,
 };
