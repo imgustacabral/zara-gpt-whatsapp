@@ -8,7 +8,7 @@ import {
   getThankYouMessage,
   getDonationMessage,
   getClearChatSuccessMessage,
-  getHelperSuporter,
+  getHelperSuporterMessage,
 } from './helpers/chat-messages';
 import { getServiceUnavailableError } from './helpers/error-messages';
 
@@ -109,7 +109,7 @@ export class MessageService {
     return getThankYouMessage();
   }
 
-  async helperSuport() {
-    return getHelperSuporter();
+  async HelperSuporterMessage() {
+    return getHelperSuporterMessage();
   }
 }

@@ -43,7 +43,7 @@ function getClearChatSuccessMessage(): string {
   return `Histórico limpo com sucesso, como posso te ajudar hoje? `;
 }
 
-function getHelperSuporter(): string {
+function getHelperSuporterMessage(): string {
   return `Para suporte humanizado, entre em contato através dos seguintes números durante o horário comercial:
 
   📞 +55 64 9 8123-0208 - Falar com Gustavo
@@ -57,5 +57,5 @@ export {
   getHelpMessage,
   getThankYouMessage,
   getClearChatSuccessMessage,
-  getHelperSuporter,
+  getHelperSuporterMessage,
 };

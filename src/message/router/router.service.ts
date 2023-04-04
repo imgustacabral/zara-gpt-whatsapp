@@ -29,7 +29,7 @@ export class RouterService {
     this.commands.set('doar', this.handleDonateCommand.bind(this));
     this.commands.set('/help', this.handleHelpCommand.bind(this));
     this.commands.set('ajuda', this.handleHelpCommand.bind(this));
-    this.commands.set('/suporte', this.handleSuportHelper.bind(this));
+    this.commands.set('/suporte', this.handleSuporterHelperCommand.bind(this));
   }
 
   initialize(): void {
@@ -139,10 +139,10 @@ export class RouterService {
     });
   }
 
-  async handleSuportHelper(msg,to){
+  async handleSuporterHelperCommand(msg,to){
     return await this.reply({
       to,
-      body: await this.messageService.helperSuport(),
+      body: await this.messageService.HelperSuporterMessage(),
     });
   }
 
