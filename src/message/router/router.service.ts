@@ -16,8 +16,8 @@ export class RouterService {
       authStrategy: new LocalAuth({ clientId: 'zara-bot' }),
       puppeteer: {
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  },
+        args: ['--no-sandbox'],
+      },
     });
 
     this.commands = new Map<string, Function>();
@@ -57,7 +57,6 @@ export class RouterService {
       const handler = this.commands.get(command);
       if (handler) {
         return await handler(msg, to);
-        
       }
 
       if (isGroupMessage && command !== 'zara') {
@@ -139,13 +138,10 @@ export class RouterService {
     });
   }
 
-  async handleSuporterHelperCommand(msg,to){
+  async handleSuporterHelperCommand(msg, to) {
     return await this.reply({
       to,
       body: await this.messageService.HelperSuporterMessage(),
     });
   }
-
 }
-
-
